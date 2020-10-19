@@ -1,0 +1,29 @@
+#include "Rule.h"
+#include "Predicate.h"
+#include <string>
+#include <vector> 
+#include <sstream>
+
+Rule::Rule(Predicate* headPredicate){
+	this->headPredicate = headPredicate;
+}
+
+void Rule::addHeadPredicate(Predicate* headPredicate){
+	this->headPredicate = headPredicate;
+}
+
+void Rule::addPredicate(Predicate* p){
+	predicates.push_back(p);
+}
+
+string Rule::toString(){
+	stringstream ss;
+	ss << headPredicate->toString() << " :- ";
+	for(int i = 0; (unsigned)i < predicates.size(); i++){
+		ss << predicates[i]->toString();
+		if((unsigned)(i + 1) < predicates.size())
+			ss << ",";
+	}
+	ss << ".";
+	return ss.str();
+}

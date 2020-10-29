@@ -14,4 +14,6 @@ public:
 	void addId(string id);
 	void addParameter(Parameter* p);
 	string toString();
+	string getId();
+	vector<string> param_toString();
 };

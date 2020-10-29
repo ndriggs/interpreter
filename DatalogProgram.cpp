@@ -4,6 +4,24 @@
 #include <sstream>
 #include <vector>
 #include <iostream>
+
+vector<Predicate*> DatalogProgram::getSchemes(){
+	return schemes;
+}
+
+vector<Predicate*> DatalogProgram::getFacts(){
+	return facts;
+}
+
+vector<Predicate*> DatalogProgram::getQueries(){
+	return queries;
+}
+
+vector<Rule*> DatalogProgram::getRules(){
+	return rules;
+}
+
+
 void DatalogProgram::insertDomainString(string str){
 	domain.insert(str);
 }

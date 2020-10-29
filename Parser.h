@@ -36,5 +36,5 @@ private:
 	void ParseOperator(queue<string> &input, Parameter*& p);
 
 public:
-	void ParseDatalog(queue<string> &input);
+	DatalogProgram ParseDatalog(queue<string> &input);
 };

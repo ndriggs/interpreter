@@ -1,6 +1,8 @@
+#pragma once
+#include "Header.h"
+#include "Tuple.h"
 #include <set>
 #include <string>
-#include <attrList>
 #include <vector>
 
 using namespace std;
@@ -13,10 +15,10 @@ private:
 
 public:
 	Relation(string schemeName, vector<string> attrList);
-	void addTuple(string relName, vector<string> values);
+	void addTuple(vector<string> tuple);
 
 	Relation select1(Relation r, int index, string value);
 	Relation select2(Relation r, int index1, int index2);
 	Relation project(Relation r, vector<string> indices);
 	Relation rename(Relation r);
-}
+};

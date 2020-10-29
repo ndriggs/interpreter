@@ -20,5 +20,9 @@ public:
 	void addQuery(Predicate* query);
 	void addRule(Rule* rule);
 	string toString();
+	vector<Predicate*> getSchemes();
+	vector<Predicate*> getFacts();
+	vector<Predicate*> getQueries();
+	vector<Rule*> getRules();
 
 };

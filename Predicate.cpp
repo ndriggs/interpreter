@@ -4,6 +4,18 @@
 #include <sstream>
 using namespace std;
 
+string Predicate::getId(){
+	return id;
+}
+
+vector<string> Predicate::param_toString(){
+	vector<string> par;
+	for(int i = 0; (unsigned)i < parameters.size(); i++){
+		par.push_back(parameters[i]->toString());
+	}
+	return par;
+}
+
 Predicate::Predicate(){
 	this->id = "";
 }

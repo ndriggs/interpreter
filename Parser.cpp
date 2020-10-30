@@ -109,7 +109,7 @@ void Parser::ParseScheme(queue<string> &input){
 	input.pop();
 	ParseIdList(input, ids);
 	for(int i = 0; (unsigned)i < ids.size(); i++){
-		s->addParameter(new Parameter(ids[i]));
+		s->addParameter(new Parameter(ids[i], false));
 	}
 	check("RIGHT_PAREN", input.front());
 	input.pop();
@@ -127,7 +127,7 @@ void Parser::ParseFact(queue<string> &input){
 	check("STRING", input.front());
 	string str = getTokenValue(input.front());
 	dp.insertDomainString(str);
-        f->addParameter(new Parameter(str));	
+        f->addParameter(new Parameter(str, true));	
 	input.pop();
 	ParseStringList(input, f);
 	check("RIGHT_PAREN", input.front());
@@ -185,7 +185,7 @@ void Parser::ParseHeadPredicate(queue<string> &input, Predicate*& p){
 	check("RIGHT_PAREN", input.front());
 	input.pop();
 	for(int i = 0; (unsigned)i < ids.size(); i++){
-		p->addParameter(new Parameter(ids[i]));
+		p->addParameter(new Parameter(ids[i], false));
 	}
 	return;
 }
@@ -205,7 +205,7 @@ void Parser::ParsePredicate(queue<string> &input, Predicate*& p){
 	check("RIGHT_PAREN", input.front());
 	input.pop();
 	for(int i = 0; (unsigned)i < params.size(); i++){
-		p->addParameter(params[i]);
+		p->addParameter(params[i], false);
 	}
 	return;
 }
@@ -239,7 +239,7 @@ void Parser::ParseStringList(queue<string> &input, Predicate*& f){
 	check("STRING", input.front());
 	string str = getTokenValue(input.front());
 	dp.insertDomainString(str);
-	f->addParameter(new Parameter(str));
+	f->addParameter(new Parameter(str, true));
 	input.pop();
 	ParseStringList(input, f);
 	return;
@@ -260,11 +260,18 @@ void Parser::ParseIdList(queue<string> &input, vector<string> &ids){
 	
 void Parser::ParseParameter(queue<string> &input, Parameter*& p){
 	string tokenType = returnTokenType(input.front());
-	if((tokenType == "STRING") || (tokenType == "ID")){
+	if(tokenType == "STRING"){
 		string parm = getTokenValue(input.front());
 		p->addSome(parm);
+		p->addBool(true);
 		input.pop();
 		return;
+	} else if(tokenType == "ID") {
+		string parm = getTokenValue(input.front());
+       		p->addSome(parm);
+		p->addBool(false);
+		input.pop();
+		return;	
 	} else{
 		ParseExpression(input, p);
 		return;

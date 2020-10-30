@@ -9,5 +9,8 @@ private :
 
 public :
 	Tuple(vector<string> values);
-	bool operator< (const Tuple & other) const;	
+	bool operator< (const Tuple & other) const;
+	void toString() const;
+	string getVal(int index) const;
+	vector<string> getVals() const;	
 };

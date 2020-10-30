@@ -4,10 +4,10 @@
 #include <string>
 #include <iostream>
 #include <vector>
-
+#include <map>
 using namespace std;
 
-void Interpreter::Run(DatalogProgram* dp, Database* &db){
+void Interpreter::Run(DatalogProgram* dp, Database* db){
 	// for every s in scheme, make a new relation
 	vector<Predicate*> schemes = dp->getSchemes();
 	for(int i = 0; (unsigned)i < schemes.size(); i++){
@@ -22,7 +22,38 @@ void Interpreter::Run(DatalogProgram* dp, Database* &db){
 		vector<string> tupl = facts[i]->param_toString();
 		db->addTuple(name, tupl);
 	}
+	cout << endl << "Database:" << endl;
+	db->toString();
+
+	//for each query
+	//get the relation with the same name as the predicate name of the query
+	//select tuples that match the query
+	//project
+	//rename
+	
+	vector<Predicate*> queries = dp->getQueries();
+	for(int i = 0; (unsigned)i < queries.size(); i++){
+		string name = queries[i]->getId();
+		Relation r = db->getRelation(name);
+		vector<string> params = queries[i]->toString();
+		map<string, int> indexes;	
+		for(int i = 0; (unsigned)i < params.size(); i++){
+			if(params[i].isConstant()){
+				r = r.select1(i, params[i].toString());
+			} else {
+				if(indexes.find(params[i].toString() != indexes.end()){
+					rNew = r.select2();
+				} else {
+					indexes.insert({params[i].toString(), i});
+				}
+			}
+		r = r.project();
+		r = r.rename();
+		r.toString();
+		}
+	}
 }
+
 
 Relation* Interpreter::evaluatePredicate(Predicate *p){
 	string name = p->getId();

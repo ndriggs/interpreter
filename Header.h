@@ -11,4 +11,6 @@ private :
 public :
 	Header();
 	Header(vector<string> attr);
+	void toString();
+	vector<string> getAtt();
 };

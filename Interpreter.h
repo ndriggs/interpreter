@@ -8,6 +8,6 @@ using namespace std;
 
 class Interpreter {
 public :
-	void Run(DatalogProgram* dp, Database* &db);
+	void Run(DatalogProgram* dp, Database* db);
 	Relation* evaluatePredicate(Predicate* p);
 };

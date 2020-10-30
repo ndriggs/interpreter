@@ -16,9 +16,11 @@ private:
 public:
 	Relation(string schemeName, vector<string> attrList);
 	void addTuple(vector<string> tuple);
+	void addTuples(set<Tuple> tuples)
+	Relation select1(int index, string value);
+	Relation select2(int index1, int index2);
+	Relation project(vector<int> indices);
+	Relation rename(Relation* r);
 
-	Relation select1(Relation r, int index, string value);
-	Relation select2(Relation r, int index1, int index2);
-	Relation project(Relation r, vector<string> indices);
-	Relation rename(Relation r);
+	void toString();
 };

@@ -11,6 +11,8 @@
 #include <iostream>
 #include <fstream>
 #include "DatalogProgram.h"
+#include "Interpreter.h"
+#include "Database.h"
 
 using namespace std;
 
@@ -37,5 +39,8 @@ int main(int argc, char** argv){
 	}
 	Parser p;
 	DatalogProgram dp = p.ParseDatalog(lines);
+	Database db;
+	Interpreter i;
+	i.Run(&dp, &db);
 	return 0;
 }	

@@ -11,4 +11,6 @@ private:
 public:
 	void addRelation(string name, Relation r);
 	void addTuple(string name, vector<string> tupl);
+	void toString();
+	Relation getRelation(string name) const;
 };

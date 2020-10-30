@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <iostream>
 using namespace std;
 
 string Predicate::getId(){
@@ -13,6 +14,7 @@ vector<string> Predicate::param_toString(){
 	for(int i = 0; (unsigned)i < parameters.size(); i++){
 		par.push_back(parameters[i]->toString());
 	}
+	cout << endl;
 	return par;
 }
 

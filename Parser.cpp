@@ -205,7 +205,7 @@ void Parser::ParsePredicate(queue<string> &input, Predicate*& p){
 	check("RIGHT_PAREN", input.front());
 	input.pop();
 	for(int i = 0; (unsigned)i < params.size(); i++){
-		p->addParameter(params[i], false);
+		p->addParameter(params[i]);
 	}
 	return;
 }

@@ -3,7 +3,7 @@
 
 Parameter::Parameter(string value, bool isConst){
 	this->value = value;
-	isConstant = isConst;
+	isString = isConst;
 }
 
 void Parameter::addSome(string c){
@@ -11,13 +11,13 @@ void Parameter::addSome(string c){
 }
 
 void Parameter::addBool(bool cons){
-	isConstant = cons;
+	isString = cons;
 }
 
 string Parameter::toString(){
 	return this->value;
 }
 
-bool Parameter::isConstant() const{
-	return isConstant;
+bool Parameter::isConstant(){
+	return isString;
 }

@@ -1,6 +1,7 @@
 #include "Interpreter.h"
 #include "DatalogProgram.h"
 #include "Database.h"
+#include "Predicate.h"
 #include <string>
 #include <iostream>
 #include <vector>
@@ -30,32 +31,55 @@ void Interpreter::Run(DatalogProgram* dp, Database* db){
 	//select tuples that match the query
 	//project
 	//rename
-	
+		
 	vector<Predicate*> queries = dp->getQueries();
+	cout << "got the querires" << endl;
 	for(int i = 0; (unsigned)i < queries.size(); i++){
 		string name = queries[i]->getId();
+		cout << "got id" << endl;
 		Relation r = db->getRelation(name);
-		vector<string> params = queries[i]->toString();
+		cout << "got relation" << endl;
+		vector<Parameter*> params = queries[i]->param_vec();
+		cout << "got param vec" << endl;
 		map<string, int> indexes;	
 		for(int i = 0; (unsigned)i < params.size(); i++){
-			if(params[i].isConstant()){
-				r = r.select1(i, params[i].toString());
+			if(params[i]->isConstant()){
+				r = r.select1(i, params[i]->toString());
+				cout << "did select 1" << endl; 
 			} else {
-				if(indexes.find(params[i].toString() != indexes.end()){
-					rNew = r.select2();
+				if(indexes.find(params[i]->toString()) != indexes.end()){
+					r = r.select2(i, indexes.find(params[i]->toString())->second);
 				} else {
-					indexes.insert({params[i].toString(), i});
+					indexes.insert({params[i]->toString(), i});
 				}
 			}
-		r = r.project();
-		r = r.rename();
-		r.toString();
+		}
+		vector<int> var_indexs;
+		vector<string> var_names;
+		cout << "does it" << endl;
+		for(auto it = indexes.begin(); it != indexes.end(); ++it){
+			var_indexs.push_back(it->second);
+			var_names.push_back(it->first);
+		}
+		cout << "like auto" << endl;
+		r = r.project(var_indexs);
+		cout << "how about project" << endl;
+		/***for(int i = 0; (unsigned)i < var_names.size(); i++){
+			r = r.rename(i, var_names[i]);
+			cout << "RENAME" << endl;
+		}***/
+		cout << queries[i]->toString() << "?";
+		if(r.isEmpty())
+			cout << "No" << endl;
+		else{
+			cout << "Yes(" << r.tuple_size() << ")" << endl;
+			r.toString();
 		}
 	}
 }
 
 
-Relation* Interpreter::evaluatePredicate(Predicate *p){
+Relation* Interpreter::evaluatePredicate(Predicate* p){
 	string name = p->getId();
 	vector<string> params = p->param_toString();
 	Relation* r = new Relation(name, params);

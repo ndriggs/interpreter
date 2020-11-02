@@ -13,6 +13,10 @@ Relation::Relation(string schemeName, vector<string> attrList){
 	header = Header(attrList);
 }
 
+Relation::Relation(){
+	name="";
+}
+
 void Relation::addTuple(vector<string> tuple){
 	Tuple t(tuple);
 	tuples.insert(t);
@@ -41,7 +45,7 @@ Relation Relation::select2(int index1, int index2){
 			newTuples.insert(*it);
 	}
 	rel.addTuples(newTuples);
-	return r;
+	return rel;
 }
 
 Relation Relation::project(vector<int> indices){
@@ -55,7 +59,18 @@ Relation Relation::project(vector<int> indices){
 		newTuples.insert(newTup);
 	}
 	rel.addTuples(newTuples);
-	return r;
+	return rel;
+}
+
+bool Relation::isEmpty(){
+	if(tuples.size() == 0)
+		return true;
+	else 
+		return false;
+}
+
+int Relation::tuple_size(){
+	return tuples.size();
 }
 
 Relation Relation::rename(int index, string newName){
@@ -66,9 +81,13 @@ Relation Relation::rename(int index, string newName){
 }
 
 void Relation::toString(){
-	cout << name << endl;
-	header.toString();
-	for(auto it = tuples.begin(); it != tuples.end(); ++it)
-		it->toString();
-	cout << endl;
+	for(auto it = tuples.begin(); it != tuples.end(); ++it){
+		for(int i = 0; (unsigned)i < header.size(); i++){
+			cout << "  " << header.print_attribute(i);
+			cout << "=" << it->getVal(i);
+			if(((unsigned)i + 1) < header.size())
+				cout << ", ";
+		}
+		cout << endl;
+	}
 }

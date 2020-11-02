@@ -15,12 +15,14 @@ private:
 
 public:
 	Relation(string schemeName, vector<string> attrList);
+	Relation();
 	void addTuple(vector<string> tuple);
-	void addTuples(set<Tuple> tuples)
+	void addTuples(set<Tuple> tuples);
 	Relation select1(int index, string value);
 	Relation select2(int index1, int index2);
 	Relation project(vector<int> indices);
-	Relation rename(Relation* r);
-
+	Relation rename(int index, string newName);
+	bool isEmpty();
+	int tuple_size();
 	void toString();
 };

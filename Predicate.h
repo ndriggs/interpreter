@@ -16,4 +16,5 @@ public:
 	string toString();
 	string getId();
 	vector<string> param_toString();
+	vector<Parameter*> param_vec();
 };

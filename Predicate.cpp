@@ -9,12 +9,15 @@ string Predicate::getId(){
 	return id;
 }
 
+vector<Parameter*> Predicate::param_vec(){
+	return parameters;
+}
+
 vector<string> Predicate::param_toString(){
 	vector<string> par;
 	for(int i = 0; (unsigned)i < parameters.size(); i++){
 		par.push_back(parameters[i]->toString());
 	}
-	cout << endl;
 	return par;
 }
 

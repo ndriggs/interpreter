@@ -5,7 +5,7 @@
 #include <string>
 #include <iostream>
 #include <vector>
-#include <map>
+#include <algorithm>
 using namespace std;
 
 void Interpreter::Run(DatalogProgram* dp, Database* db){
@@ -23,8 +23,9 @@ void Interpreter::Run(DatalogProgram* dp, Database* db){
 		vector<string> tupl = facts[i]->param_toString();
 		db->addTuple(name, tupl);
 	}
+	/***
 	cout << endl << "Database:" << endl;
-	db->toString();
+	db->toString();***/
 
 	//for each query
 	//get the relation with the same name as the predicate name of the query
@@ -33,47 +34,34 @@ void Interpreter::Run(DatalogProgram* dp, Database* db){
 	//rename
 		
 	vector<Predicate*> queries = dp->getQueries();
-	cout << "got the querires" << endl;
 	for(int i = 0; (unsigned)i < queries.size(); i++){
 		string name = queries[i]->getId();
-		cout << "got id" << endl;
 		Relation r = db->getRelation(name);
-		cout << "got relation" << endl;
 		vector<Parameter*> params = queries[i]->param_vec();
-		cout << "got param vec" << endl;
-		map<string, int> indexes;	
+		vector<int> var_indexs;
+		vector<string> var_names;
 		for(int i = 0; (unsigned)i < params.size(); i++){
 			if(params[i]->isConstant()){
 				r = r.select1(i, params[i]->toString());
-				cout << "did select 1" << endl; 
 			} else {
-				if(indexes.find(params[i]->toString()) != indexes.end()){
-					r = r.select2(i, indexes.find(params[i]->toString())->second);
+				vector<string>::iterator it = find(var_names.begin(), var_names.end(), params[i]->toString());
+				if(it != var_names.end()){
+					r = r.select2(i, var_indexs[it - var_names.begin()]);
 				} else {
-					indexes.insert({params[i]->toString(), i});
+					var_indexs.push_back(i);
+					var_names.push_back(params[i]->toString());
 				}
 			}
 		}
-		vector<int> var_indexs;
-		vector<string> var_names;
-		cout << "does it" << endl;
-		for(auto it = indexes.begin(); it != indexes.end(); ++it){
-			var_indexs.push_back(it->second);
-			var_names.push_back(it->first);
-		}
-		cout << "like auto" << endl;
 		r = r.project(var_indexs);
-		cout << "how about project" << endl;
-		/***for(int i = 0; (unsigned)i < var_names.size(); i++){
-			r = r.rename(i, var_names[i]);
-			cout << "RENAME" << endl;
-		}***/
-		cout << queries[i]->toString() << "?";
+		r = r.rename(var_names);
+		cout << queries[i]->toString() << "? ";
 		if(r.isEmpty())
 			cout << "No" << endl;
 		else{
 			cout << "Yes(" << r.tuple_size() << ")" << endl;
-			r.toString();
+			if(r.header_size() > 0)
+				r.toString();
 		}
 	}
 }

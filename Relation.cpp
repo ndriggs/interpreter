@@ -73,21 +73,25 @@ int Relation::tuple_size(){
 	return tuples.size();
 }
 
-Relation Relation::rename(int index, string newName){
-	vector<string> newNames = header.getAtt();
-	newNames[index] = newName;
+Relation Relation::rename(vector<string> newNames){
 	Relation rel(name, newNames);
+	rel.addTuples(tuples);
 	return rel;
 }
 
 void Relation::toString(){
 	for(auto it = tuples.begin(); it != tuples.end(); ++it){
+		cout << "  ";
 		for(int i = 0; (unsigned)i < header.size(); i++){
-			cout << "  " << header.print_attribute(i);
+			cout << header.print_attribute(i);
 			cout << "=" << it->getVal(i);
 			if(((unsigned)i + 1) < header.size())
 				cout << ", ";
 		}
 		cout << endl;
 	}
+}
+
+int Relation::header_size(){
+	return header.size();
 }

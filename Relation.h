@@ -21,8 +21,9 @@ public:
 	Relation select1(int index, string value);
 	Relation select2(int index1, int index2);
 	Relation project(vector<int> indices);
-	Relation rename(int index, string newName);
+	Relation rename(vector<string> newNames);
 	bool isEmpty();
 	int tuple_size();
 	void toString();
+	int header_size();
 };

@@ -54,8 +54,8 @@ DatalogProgram Parser::ParseDatalog(queue<string> &input){
 		ParseQuery(input);
 		ParseQueryList(input);
 		check("EOF", input.front());
-		cout << "Success!" << endl;
-		cout << dp.toString() << endl;
+		//cout << "Success!" << endl;
+		//cout << dp.toString() << endl;
 	} catch(string line) {
 		cout << "Failure!" << endl << line << endl;
 	}

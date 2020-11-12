@@ -27,3 +27,15 @@ string Rule::toString(){
 	ss << ".";
 	return ss.str();
 }
+
+vector<Predicate*> Rule::getPredicates() const{
+	return predicates;
+}
+
+vector<Parameter*> Rule::getHeadPredParams() const{
+	return headPredicate->param_vec();
+}
+
+string Rule::getHeadPredId() const{
+	return headPredicate->getId();
+}

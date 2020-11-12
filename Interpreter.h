@@ -10,4 +10,5 @@ class Interpreter {
 public :
 	void Run(DatalogProgram* dp, Database* db);
 	Relation* evaluatePredicate(Predicate* p);
+	void evaluateRules(DatalogProgram* dp, Database* db, bool &tuplesAdded);
 };

@@ -26,6 +26,10 @@ string Tuple::getVal(int index) const{
 	return values[index];
 }
 
+int Tuple::size() const{
+	return values.size();
+}
+
 vector<string> Tuple::getVals() const{
 	return values;
 }

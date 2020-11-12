@@ -22,8 +22,12 @@ public:
 	Relation select2(int index1, int index2);
 	Relation project(vector<int> indices);
 	Relation rename(vector<string> newNames);
+	Relation naturalJoin(Relation r);
+	Relation Union(Relation r, bool &tuplesAdded);
 	bool isEmpty();
 	int tuple_size();
 	void toString();
 	int header_size();
+	set<Tuple> getTuples();
+	vector<string> getAttr();
 };

@@ -13,4 +13,5 @@ public:
 	void addTuple(string name, vector<string> tupl);
 	void toString();
 	Relation getRelation(string name) const;
+	bool updateRelation(string relName, Relation r, bool &tuplesAdded);
 };

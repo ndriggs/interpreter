@@ -22,3 +22,8 @@ void Database::toString(){
 Relation Database::getRelation(string name) const{
 	return relations.at(name);
 }
+
+bool Database::updateRelation(string relName, Relation r, bool &tuplesAdded){
+	relations[relName] = relations[relName].Union(r, tuplesAdded);
+	//how to see if it inserted anything or not???
+}

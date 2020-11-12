@@ -13,5 +13,7 @@ public:
 	void addHeadPredicate(Predicate* headPredicate);
 	void addPredicate(Predicate* p);
 	string toString();
-
+	vector<Predicate*> getPredicates() const;
+	vector<Parameter*> getHeadPredParams() const;
+	string getHeadPredId() const;
 };

@@ -2,11 +2,70 @@
 #include "DatalogProgram.h"
 #include "Database.h"
 #include "Predicate.h"
+#include "Parameter.h"
 #include <string>
 #include <iostream>
 #include <vector>
 #include <algorithm>
 using namespace std;
+
+void Interpreter::evaluateRules(DatalogProgram* dp, Database* db, bool &tuplesAdded){
+	cout << "just entered" << endl;
+	vector<Rule*> rules = dp->getRules();
+	for(int k = 0; (unsigned)k < rules.size(); k++){
+		cout << "here?" << endl;
+		vector<Predicate*> queries = rules[k]->getPredicates();
+		vector<Relation> intermedResults;
+		for(int i = 0; (unsigned)i < queries.size(); i++){
+			string name = queries[i]->getId();
+			cout << "a" << endl;
+			Relation r = db->getRelation(name);
+			vector<Parameter*> params = queries[i]->param_vec();
+			vector<int> var_indexs;
+			vector<string> var_names;
+			for(int j = 0; (unsigned)j < params.size(); j++){
+				if(params[j]->isConstant()){
+					r = r.select1(j, params[j]->toString());
+				} else {
+					vector<string>::iterator it = find(var_names.begin(), var_names.end(), params[j]->toString());
+					if(it != var_names.end()){
+						r = r.select2(j, var_indexs[it - var_names.begin()]);
+					} else {
+						var_indexs.push_back(j);
+						var_names.push_back(params[j]->toString());
+					}
+				}
+			}
+			cout << "b" << endl;
+			r = r.project(var_indexs);
+			r = r.rename(var_names);
+			intermedResults.push_back(r);
+			cout << "c" << endl;
+		}
+		for(int m = 1; (unsigned)m < intermedResults.size(); m++){
+			intermedResults[m] = intermedResults[m].naturalJoin(intermedResults[m - 1]);
+		}
+		vector<int> colsToKeep;
+		cout << "D" << endl;
+		vector<Parameter*> headPredParams = rules[k]->getHeadPredParams();
+		for(int n = 0; (unsigned)n < headPredParams.size(); n++){
+			vector<string> colNames = intermedResults.back().getAttr();
+			vector<string>::iterator iter = find(colNames.begin(), colNames.end(), headPredParams[n]->toString());
+			cout << "E" << endl;
+			int ind = distance(colNames.begin(), iter);
+			colsToKeep.push_back(ind);
+		}
+		cout << "Columns to keep size: " << colsToKeep.size() << endl;
+		cout << "F" << endl;
+		intermedResults[0] = intermedResults.back().project(colsToKeep);
+		cout << "G" << endl;
+		string relName = rules[k]->getHeadPredId();
+		cout << "H" << endl;
+		db->updateRelation(relName, intermedResults[0], tuplesAdded);	
+		cout << "I " << tuplesAdded << endl;
+	}
+}
+
 
 void Interpreter::Run(DatalogProgram* dp, Database* db){
 	// for every s in scheme, make a new relation
@@ -32,7 +91,13 @@ void Interpreter::Run(DatalogProgram* dp, Database* db){
 	//select tuples that match the query
 	//project
 	//rename
-		
+	cout << "about to evaluate rules" << endl;
+	bool tuplesAdded = true;
+	while(tuplesAdded){
+		tuplesAdded = false;
+		evaluateRules(dp, db, tuplesAdded);
+	}
+	cout << "evaluated rules" << endl;	
 	vector<Predicate*> queries = dp->getQueries();
 	for(int i = 0; (unsigned)i < queries.size(); i++){
 		string name = queries[i]->getId();

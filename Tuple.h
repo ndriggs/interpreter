@@ -12,5 +12,6 @@ public :
 	bool operator< (const Tuple & other) const;
 	void toString() const;
 	string getVal(int index) const;
+	int size() const;
 	vector<string> getVals() const;	
 };

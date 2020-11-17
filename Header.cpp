@@ -12,7 +12,10 @@ Header::Header(vector<string> attr){
 }
 
 string Header::print_attribute(int index){
-	return attributes[index];
+	if(attributes.size() != 0)
+		return attributes[index];
+	else 
+		return "";
 }
 
 void Header::toString(){

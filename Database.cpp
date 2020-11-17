@@ -3,6 +3,7 @@
 #include <string>
 #include <unordered_map>
 #include <sstream>
+#include <iostream>
 
 using namespace std;
 
@@ -23,7 +24,19 @@ Relation Database::getRelation(string name) const{
 	return relations.at(name);
 }
 
-bool Database::updateRelation(string relName, Relation r, bool &tuplesAdded){
-	relations[relName] = relations[relName].Union(r, tuplesAdded);
-	//how to see if it inserted anything or not???
+void Database::updateRelation(string relName, Relation r, bool &tuplesAdded){
+	relations[relName] = relations[relName].Union(r, tuplesAdded); 
 }
+
+unordered_map<string, Relation> Database::getRelations() const{
+	return relations;
+}
+
+int Database::num_tuples() const{
+	int num_tuples = 0;
+	for(auto it = relations.begin(); it != relations.end(); it++){
+		num_tuples += it->second.tuple_size();
+	}
+	return num_tuples;
+}
+	

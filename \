@@ -49,12 +49,24 @@ void Interpreter::evaluateRules(DatalogProgram* dp, Database* db, bool &tuplesAd
 			int ind = distance(colNames.begin(), iter);
 			colsToKeep.push_back(ind);
 		}
+		cout << "A" << endl;
 		intermedResults[0] = intermedResults.back().project(colsToKeep);
+		cout << "B" << endl;
 		string relName = rules[k]->getHeadPredId();
-		cout << rules[k]->toString() << endl;
-		bool print = true;
-		db->updateRelation(relName, intermedResults[0], print);	
+		cout << "C" << endl;
+		cout << "Relation name " << relName << endl;
+		intermedResults[0].toString();
+		db->updateRelation(relName, intermedResults[0], tuplesAdded);	
+		cout << "D" << endl;
 	}
+
+	unordered_map<string, Relation> relations = db->getRelations();
+	for(unordered_map<string, Relation>::iterator it = relations.begin(); it != relations.end(); it++){
+		it->second.toString();
+		cout << endl;
+	}
+	
+
 }
 
 
@@ -82,21 +94,19 @@ void Interpreter::Run(DatalogProgram* dp, Database* db){
 	//select tuples that match the query
 	//project
 	//rename
-	int num_tuples = 0;
-	int new_num_t = 0;
-	int passes = 0;
-	cout << "Rule Evaluation" << endl;
-	do{
-		bool tuplesAdded = false;
-		num_tuples = db->num_tuples();
+	bool tuplesAdded = true;
+	while(tuplesAdded){
+		tuplesAdded = false;
 		evaluateRules(dp, db, tuplesAdded);
-		new_num_t = db->num_tuples();
-		passes += 1;
-	}while(num_tuples != new_num_t);
+		cout << "one" << endl;
+	}
+	
+	unordered_map<string, Relation> relations = db->getRelations();
+	for(unordered_map<string, Relation>::iterator it = relations.begin(); it != relations.end(); it++){
+		it->second.toString();
+		cout << endl;
+	}
 
-	cout << endl << "Schemes populated after " << passes << " passes through the Rules." << endl << endl;	
-
-	cout << "Query Evaluation" << endl;
 	vector<Predicate*> queries = dp->getQueries();
 	for(int i = 0; (unsigned)i < queries.size(); i++){
 		string name = queries[i]->getId();

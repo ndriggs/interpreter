@@ -16,6 +16,7 @@ private:
 public:
 	Relation(string schemeName, vector<string> attrList);
 	Relation();
+	void addName(string name);
 	void addTuple(vector<string> tuple);
 	void addTuples(set<Tuple> tuples);
 	Relation select1(int index, string value);
@@ -25,7 +26,7 @@ public:
 	Relation naturalJoin(Relation r);
 	Relation Union(Relation r, bool &tuplesAdded);
 	bool isEmpty();
-	int tuple_size();
+	int tuple_size() const;
 	void toString();
 	int header_size();
 	set<Tuple> getTuples();

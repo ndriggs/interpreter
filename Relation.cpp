@@ -27,8 +27,12 @@ void Relation::addTuples(set<Tuple> tuples){
 	this->tuples = tuples;
 }
 
+void Relation::addName(string name){
+	this->name = name;
+}
+
 Relation Relation::select1(int index, string value){ 
-	Relation rel;
+	Relation rel(name, header.getAtt());
 	set<Tuple> newTuples;
 	for(auto it = tuples.begin(); it != tuples.end(); it++){
 		if(it->getVal(index) == value)
@@ -39,7 +43,7 @@ Relation Relation::select1(int index, string value){
 }
 
 Relation Relation::select2(int index1, int index2){
-	Relation rel;
+	Relation rel(name, header.getAtt());
 	set<Tuple> newTuples;
 	for(auto it = tuples.begin(); it != tuples.end(); it++){
 		if(it->getVal(index1) == it->getVal(index2))
@@ -50,14 +54,21 @@ Relation Relation::select2(int index1, int index2){
 }
 
 Relation Relation::project(vector<int> indices){
-	Relation rel; 
+	vector<string> hed = header.getAtt();
+	vector<string> newHead;
+	for(int j = 0; (unsigned)j < indices.size(); j++){
+		newHead.push_back(hed[indices[j]]);
+	}
+	Relation rel(name, newHead);
 	set<Tuple> newTuples;
-	for(auto it = tuples.begin(); it != tuples.end(); it++){
+	for(set<Tuple>::iterator it = tuples.begin(); it != tuples.end(); it++){
 		vector<string> tup = it->getVals();
 		vector<string> newTup;
-       		for(int i = 0; (unsigned)i < indices.size(); i++)
+       		for(int i = 0; (unsigned)i < indices.size(); i++){
 			newTup.push_back(tup[indices[i]]);
-		newTuples.insert(newTup);
+		}
+		Tuple t(newTup);
+		newTuples.insert(t);
 	}
 	rel.addTuples(newTuples);
 	return rel;
@@ -70,7 +81,7 @@ bool Relation::isEmpty(){
 		return false;
 }
 
-int Relation::tuple_size(){
+int Relation::tuple_size() const{
 	return tuples.size();
 }
 
@@ -87,15 +98,19 @@ vector<string> Relation::getAttr(){
 Relation Relation::Union(Relation r, bool &tuplesAdded){
 	Relation rel(name, header.getAtt());
 	set<Tuple> tuples2 = r.getTuples();
-	set<Tuple> newTuples;
-	for(set<Tuple>::iterator tuple1 = tuples.begin(); tuple1 != tuples.end(); tuple1++){
-		for(set<Tuple>::iterator tuple2 = tuples2.begin(); tuple2 != tuples2.end(); tuple2++){
-			if(tuple1->getVals() == tuple2->getVals()){
-				Tuple t(tuple1->getVals());
-				bool added = newTuples.insert(t).second;
-				if(added)
-					tuplesAdded = added;
+	set<Tuple> newTuples = tuples;
+	for(set<Tuple>::iterator tuple2 = tuples2.begin(); tuple2 != tuples2.end(); tuple2++){
+		Tuple t(tuple2->getVals());
+		bool added = newTuples.insert(t).second;
+		if(tuplesAdded && added){
+			cout << "  ";
+			for(int i = 0; (unsigned)i < tuple2->size(); i++){
+				cout << header.print_attribute(i);
+				cout << "=" << tuple2->getVal(i);
+				if((unsigned)(i + 1) < header.size())
+					cout << ", ";
 			}
+			cout << endl;	
 		}
 	}
 	rel.addTuples(newTuples);
@@ -109,12 +124,10 @@ Relation Relation::naturalJoin(Relation r){
 	vector<string> attr2 = r.getAttr();
 	vector<vector<int> > matchingAttr;
 	vector<int> indexes;
-	cout << "nj point 5" << endl;
 	for(int i = 0; (unsigned)i < attr1.size(); i++){
 		for(int j = 0; (unsigned)j < attr2.size(); j++){
 			if(attr1[i] == attr2[j]){
 				vector<int> pair{ i, j };
-				cout << "natural j 1" << endl;
 				indexes.push_back(j);
 				matchingAttr.push_back(pair);
 				break;
@@ -127,7 +140,6 @@ Relation Relation::naturalJoin(Relation r){
 
 	set<Tuple> tuples2 = r.getTuples();
 	set<Tuple> newTuples;
-	cout << "nj 2" << endl;
 	
 	for(set<Tuple>::iterator tuple1 = tuples.begin(); tuple1 != tuples.end(); tuple1++){
 		for(set<Tuple>::iterator tuple2 = tuples2.begin(); tuple2 != tuples2.end(); tuple2++){
@@ -138,7 +150,6 @@ Relation Relation::naturalJoin(Relation r){
 					break;
 				}
 			}
-			cout << "nj 3" << endl; 
 			if(match){
 				vector<string> newTuple;
 				for(int i = 0; (unsigned)i < tuple1->size(); i++)
@@ -154,7 +165,6 @@ Relation Relation::naturalJoin(Relation r){
 
 		}
 	}
-	cout << "nj 4" << endl;
 	vector<string> newHeader{ header.getAtt() };
 	vector<string> rel2_attr = r.getAttr();
 	for(int j = 0; (unsigned)j < r.header_size(); j++){
@@ -175,10 +185,10 @@ set<Tuple> Relation::getTuples(){
 void Relation::toString(){
 	for(auto it = tuples.begin(); it != tuples.end(); ++it){
 		cout << "  ";
-		for(int i = 0; i < header.size(); i++){
+		for(int i = 0; (unsigned)i < it->size(); i++){
 			cout << header.print_attribute(i);
 			cout << "=" << it->getVal(i);
-			if((i + 1) < header.size())
+			if((unsigned)(i + 1) < header.size())
 				cout << ", ";
 		}
 		cout << endl;
